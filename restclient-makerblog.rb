@@ -7,7 +7,7 @@ module MakerBlog
     def list_posts
     	code = 200
       response = RestClient.get('http://makerblog.herokuapp.com/posts',
-        {:accept => :json })
+        :accept => :json )
       posts = JSON.parse(response.body)
       posts.each do |post|
         puts "Name: #{post["name"]}\nTitle: #{post["title"]}\nContent: #{post["content"]}\n\n"
@@ -32,13 +32,11 @@ module MakerBlog
 
     def create_post(name, title, content)
       url = 'http://makerblog.herokuapp.com/posts'
-      payload = {:post => {'name' => name, 'title' => title, 'content' => content}}
+      payload = {:post => {:name => name, :title => title, :content => content}}
       code = 201
 
-      response = RestClient.post(url, 
-        { :accept => :json
-          :content_type => :json },
-        parameters: payload)
+      response = RestClient.post(url, :parameters => payload,
+        :accept => :json, :content_type => :json)
       post = JSON.parse(response.body)
       # convert then display your results here
       puts "ID: #{post["id"]}\nName: #{post["name"]}\nTitle: #{post["title"]}\nContent: #{post["content"]}\nCreated at: #{post["created_at"]}\nUpdated at: #{post["updated_at"]}\n\n"
@@ -58,9 +56,8 @@ module MakerBlog
       params[:content] = options[:content] unless options[:content].nil?
 
       response = RestClient.put(url,
-        parameters: { :post => params },
-        headers: { "Accept" => "application/json",
-                   "Content-Type" => "application/json" })
+        { :post => params },
+        { :accept => :json, :content_type => :json })
 
       post = JSON.parse(response.body)
       # you know the drill, convert the response and display the result nicely
@@ -75,7 +72,9 @@ module MakerBlog
       code = 204
 
       response = RestClient.delete(url, { :accept => :json })
-      puts JSON.parse(response.body)
+      # JSON parse puts statement below won't work because 
+      # 'response.body' is gone already???
+      # puts JSON.parse(response.body)
       if response.code != code
       	puts "DELETE: Error code: #{response.code}. Expected code: #{code}"
       end
@@ -86,10 +85,10 @@ end
 
 
 client = MakerBlog::Client.new
-client.list_posts
-# client.show_post(19307)
-# client.create_post("Slim Thug", "Thuggin'", "H from the bottom of the map")
-# client.edit_post(19307, {:name => "Mom", :content => "Moms rule"})
-# client.delete_post(19247)
+# client.list_posts
+# client.show_post(19604)
+client.create_post("Slim Thug", "Thuggin'", "H from the bottom of the map")
+# client.edit_post(19604, {:name => "Mom", :content => "Moms rule"})
+# client.delete_post(19618)
 
 
