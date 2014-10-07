@@ -1,4 +1,4 @@
 http
 ====
 
-Studies in HTTP methods and exercises in Ruby
+Studies in HTTP and JSON exercises in Ruby
